@@ -1,7 +1,8 @@
 local common = import "common.ccf-conf.jsonnet";
 local context = import "context.ccf-facts.json";
-local containerSecrets = import "grafana.secrets.jsonnet";
-local prometheusConf = import "prometheus.conf.jsonnet";
+local containerSecrets = import "grafana.secrets.ccf-conf.jsonnet";
+local prometheusConf = import "prometheus.ccf-conf.jsonnet";
+local dockerConf = import "docker-localhost.ccf-facts.json";
 
 local webServicePort = 3000;
 local webServicePortInContainer = webServicePort;
@@ -67,7 +68,7 @@ local webServicePortInContainer = webServicePort;
 				name: "Prometheus",
 				type: "prometheus",
 				access: "proxy",
-				url: 'http://' + context.DOCKER_HOST_IP_ADDR + ":" + prometheusConf.webServicePort
+				url: 'http://' + dockerConf.dockerHostIPAddress + ":" + prometheusConf.webServicePort
 			},
 		],
 	}),
