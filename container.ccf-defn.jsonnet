@@ -2,6 +2,7 @@ local common = import "common.ccf-conf.jsonnet";
 local context = import "context.ccf-facts.json";
 local containerSecrets = import "grafana.secrets.ccf-conf.jsonnet";
 local prometheusConf = import "prometheus.ccf-conf.jsonnet";
+local traefikConf = import "traefik.ccf-conf.jsonnet";
 local dockerConf = import "docker-localhost.ccf-facts.json";
 
 local webServicePort = 3000;
@@ -34,7 +35,7 @@ local webServicePortInContainer = webServicePort;
 					'traefik.domain': context.containerName + '.' + common.applianceFQDN,
 					'traefik.backend': context.containerName,
 					'traefik.frontend.entryPoints': 'http,https',
-					'traefik.frontend.rule': 'Host:' + context.containerName + '.' + common.applianceFQDN,
+					'traefik.frontend.rule': 'Host:' + context.containerName + '.' + traefikConf.applianceFQDN,
 				}
 			},
 		},
@@ -72,4 +73,15 @@ local webServicePortInContainer = webServicePort;
 			},
 		],
 	}),
+    "etc/provisioning/datasources/loki.yml" : std.manifestYamlDoc({
+         apiVersion: 1,
+         datasources: [
+             {
+                 name: "Loki",
+                 type: "loki",
+                 access: "proxy",
+                 url: 'http://loki:3100'
+             },
+         ],
+    }),
 }
